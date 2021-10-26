@@ -17,5 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from .views import classbasedAPI
 urlpatterns = [
-    path('',classbasedAPI.as_view())
+    path("data/", classbasedAPI.as_view(), name=""),
+    path('data/<int:pk>/',classbasedAPI.as_view())
 ]

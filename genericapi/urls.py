@@ -15,12 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.urls.conf import include
-
+from .views import classbasedAPI
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('',include('registerapp.urls')),
-    path('api/',include('crudapi.urls')),
-    path('classbasedapi/',include('classbasedcrudapi.urls')),
-    path('genericapi/',include('genericapi.urls'))
+    path("", classbasedAPI.as_view(), name=""),
+    
 ]

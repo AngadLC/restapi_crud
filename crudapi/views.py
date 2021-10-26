@@ -1,68 +1,43 @@
-from functools import partial
 from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render
-import io
-from rest_framework.parsers import JSONParser
+# from rest_framework.serializers import Serializer
 from .models import students
-# from restapi.crudapi.models import students
 from .serializers import Studentserializers
-from rest_framework.renderers import JSONRenderer
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+@api_view(['GET','POST','PUT','DELETE'])
 # Create your views here.
-@csrf_exempt
-def crud(request):
+def crud(request, pk = None):
     if request.method == "POST":
-        json_data = request.body
-        # print(json_data)
-        stream = io.BytesIO(json_data)
-        python_data = JSONParser().parse(stream)
-        print(python_data)
-        serializers = Studentserializers(data = python_data)
+        serializers = Studentserializers(data=request.data)
         if serializers.is_valid():
             serializers.save()
-            res = {'mes':'data saved'}
-            json_data= JSONRenderer().render(res)
-            return HttpResponse(json_data,content_type='application/json')
-        json_data = JSONRenderer().render(serializers.errors)
-        return HttpResponse(json_data, content_type= 'application/json')
+            return Response({'msg':"Data created"})
+        return Response(serializers.errors)
     if request.method == 'GET':
-        json_data = request.body
-        stream = io.BytesIO(json_data)
-        python_data = JSONParser().parse(stream)
-        id = python_data.get('id',None)
+        # print(request.data)
+        # using browsers
+        # id = pk
+        # third party application
+        id = request.data.get('id')
         if id is not None:
             cru = students.objects.get(id=id)
             serializers = Studentserializers(cru)
-            json_data = JSONRenderer().render(serializers.data)
-            return HttpResponse(json_data,content_type='application/json')
+            return Response(serializers.data) 
         # if all have to be look
         stu = students.objects.all()
         serializers = Studentserializers(stu, many= True)
-        # json_data = JSONRenderer().render(serializers.data)
-        # return HttpResponse(json_data,content_type='application/json')
-        data = serializers.data
-        return JsonResponse(data, safe=False)
+        return Response(serializers.data)
     if request.method == 'PUT':
-        json_data = request.body
-        stream = io.BytesIO(json_data)
-        python_data = JSONParser().parse(stream)
-        id = python_data.get('id')
-        cud = students.objects.get(id = id)
-        serializers = Studentserializers(cud,data=python_data,partial= True)
+        id = request.data.get('id')
+        stu = students.objects.get(pk = id)
+        serializers = Studentserializers(stu, data=request.data, partial = True)
         if serializers.is_valid():
             serializers.save()
-            res = {'msg':'Data updated!'}
-            return JsonResponse(res, safe=False)
-
+            return Response({'Msg':"Updated sucessful"})
+        return Response(serializers.errors)
     if request.method == 'DELETE':
-        json_data = request.body
-        stream = io.BytesIO(json_data)
-        python_data = JSONParser().parse(stream)
-        id = python_data.get('id')
-        cud = students.objects.get(id = id)
-        cud.delete()
-        res = {'msg':'Data delete!'}
-        return JsonResponse(res,safe=False)
+        id = request.data.get('id')
+        stu = students.objects.get(pk=id)
+        stu.delete()
+        return Response({'msg':'deleted'})

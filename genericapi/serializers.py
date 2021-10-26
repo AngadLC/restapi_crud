@@ -8,7 +8,7 @@ class Studentserializers(serializers.ModelSerializer):
     
     class Meta:
         model = students
-        fields = ['name', 'roll', 'city']
+        fields = [ 'roll', 'city']
     # model serializers give both the get and update method
     
     # validation 
