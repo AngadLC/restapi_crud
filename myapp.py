@@ -1,6 +1,6 @@
 import requests
 import json
-url = 'http://127.0.0.1:8000/api/'
+url = 'http://127.0.0.1:8000/classbasedapi/'
 
 # get request
 def get_data(id = None):
@@ -13,13 +13,13 @@ def get_data(id = None):
     response = r.json()
     print(response)
 #for to read the data
-get_data()
+# get_data()
 
 # for to write the data
 def post_data():
     data = {
-        'name':'qqAngad1 Lamichhane',
-        'roll':1234,
+        'name':'biplop',
+        'roll':23,
         'city':'pokhara'
         }
     # print(data)
@@ -36,8 +36,9 @@ def post_data():
 def update_data():
     data = {
         'id':2,
-        'name':'Sabina',
-        'city':'KTM'
+        'name':'Angad',
+        'roll':11,
+        'city':'Kusham'
         }
     # print(data)
     # parse x:
